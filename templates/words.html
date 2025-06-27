@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ASL Words</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #e3f2fd, #bbdefb);
+    }
+
+    .top-bar {
+      background-color: #D13939;
+      padding: 20px;
+      color: white;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 30px;
+    }
+
+    .card {
+      width: 160px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .label {
+      font-size: 20px;
+      font-weight: bold;
+      color: #D13939;
+    }
+
+    .back-btn {
+      margin: 20px auto;
+      display: block;
+      width: fit-content;
+      padding: 10px 18px;
+      background-color: #D13939;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .back-btn:hover {
+      background-color: #a32c2c;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">ASL Common Words</div>
+  <a class="back-btn" href="/learn">⬅ Back to Learn Page</a>
+
+  <div class="grid">
+    {% for word, filename in words %}
+      <div class="card">
+        <img src="{{ url_for('static', filename='image/words/' + filename) }}" alt="{{ word }}">
+        <div class="label">{{ word.replace("_", " ") }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+</body>
+</html>

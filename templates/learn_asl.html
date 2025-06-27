@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ASL Category Selection</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle, #C2D6E8, #A4BFD3);
+    }
+
+    .header {
+      text-align: center;
+      padding: 25px 10px;
+      background-color: #D13939;
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 60px); /* 60px accounts for top bar height */
+      justify-content: center;
+      align-items: center;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #d32f2f;
+      padding: 10px 20px;
+      position: relative;
+    }
+
+    .top-bar h1 {
+      color: white;
+      margin: 0;
+    }
+
+    .top-bar a {
+      background-color: white;
+      color: #d32f2f;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .top-bar .toggle-dark {
+      position: absolute;
+      top: 80px; /* Adjust position below the "Back" button */
+      right: 20px;
+      padding: 10px 15px;
+      font-size: 18px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .top-bar .toggle-dark:hover {
+      background-color: #2980b9;
+    }
+
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 30px;
+    }
+
+    .card {
+      width: 260px;
+      background-color: white;
+      border-radius: 14px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      padding: 25px 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 12px 0;
+      color: #D13939;
+    }
+
+    .card-btn {
+      display: inline-block;
+      margin-top: 12px;
+      background-color: #D13939;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .card-btn:hover {
+      background-color: #aa2c2c;
+    }
+
+    /* Dark mode styles */
+    .dark-mode {
+      background: radial-gradient(circle, #2C3E50, #1A252F);
+      color: #ecf0f1;
+    }
+
+    .dark-mode .top-bar {
+      background-color: #e74c3c;
+    }
+
+    .dark-mode .card {
+      background-color: #34495e;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .dark-mode .card-title {
+      color: #e74c3c;
+    }
+
+    .dark-mode .card-btn {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .dark-mode .card-btn:hover {
+      background-color: #c0392b;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <h1>AASK for Sign Language</h1>
+    <a href="/">⬅ Back</a>
+    <!-- Dark mode toggle button below the "Back" button -->
+    <button class="toggle-dark" onclick="toggleDarkMode()">🌓</button>
+  </div>
+
+  <div class="main-container">
+    <div class="cards-container">
+      <div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" alt="ASL Word Icon">
+        <div class="card-title">Common Words</div>
+        <a class="card-btn" href="{{ url_for('learn_words') }}">View Alphabets</a>
+      </div>
+
+      <div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3176/3176364.png" alt="ASL Alphabet Icon">
+        <div class="card-title">Alphabet A-Z & 0-9</div>
+        <a class="card-btn" href="{{ url_for('asl_alphabet') }}">View Alphabets</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle and persist dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    }
+
+    // Check and apply dark mode on load
+    window.onload = function () {
+      if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+      }
+    };
+  </script>
+</body>
+</html>

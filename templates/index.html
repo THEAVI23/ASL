@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ASL Portal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .left {
+      flex: 1;
+      background: url('{{ url_for('static', filename='AASK.png') }}') no-repeat center center;
+      background-size: 105%;
+    }
+
+    .right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      padding: 40px;
+      box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s;
+    }
+
+    .button-box {
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .button-box h2 {
+      margin-bottom: 30px;
+    }
+
+    .button-box button {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background-color 0.3s;
+    }
+
+    .button-box button:hover {
+      background-color: #c0392b;
+    }
+
+    /* Dark mode styles */
+    .dark-mode {
+      background-color: #121212;
+      color: #f1f1f1;
+    }
+
+    .dark-mode .right {
+      background-color: #1e1e1e;
+      box-shadow: none;
+    }
+
+    /* Dark mode toggle button */
+    .toggle-dark {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+      background-color: #444;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .toggle-dark:hover {
+      background-color: #222;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .left, .right {
+        flex: none;
+        width: 100%;
+        height: 50vh;
+      }
+
+      .right {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<button class="toggle-dark" onclick="toggleDarkMode()">🌓</button>
+
+<div class="container">
+  <div class="left"></div>
+  <div class="right">
+    <div class="button-box">
+      <h2>Welcome to ASL Portal</h2>
+      <button onclick="location.href='{{ url_for('translate') }}'">ASL Translate</button>
+      <button onclick="location.href='{{ url_for('learn') }}'">Learn ASL</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle and persist dark mode
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+  }
+
+  // Check and apply dark mode on load
+  window.onload = function () {
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      document.body.classList.add('dark-mode');
+    }
+  };
+</script>
+
+</body>
+</html>

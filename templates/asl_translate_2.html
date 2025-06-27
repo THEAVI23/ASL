@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ASL Translator</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f7f9fc;
+      color: #2c3e50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    h1 { font-size: 36px; margin-bottom: 10px; color: #34495e; }
+    h2 { font-size: 24px; color: #7f8c8d; margin: 10px 0 30px; }
+    .top-bar {
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .top-bar a {
+      text-decoration: none;
+      font-size: 16px;
+      color: #3498db;
+      background-color: #ecf0f1;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+    .top-bar a:hover { background-color: #d0e6f6; }
+    #video-container {
+      position: relative;
+      width: 640px;
+      height: 480px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    #video {
+      width: 640px;
+      height: 480px;
+      display: block;
+      border: 5px solid #e74c3c;
+      object-fit: cover;
+    }
+    #output-box, #sentence-box {
+      margin-top: 20px;
+      width: 640px;
+      max-width: 100%;
+      background: #ecf0f1;
+      border: 2px solid #bdc3c7;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 18px;
+      color: #2c3e50;
+      resize: none;
+      height: 100px;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 12px 28px;
+      font-size: 18px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .btn:hover { background-color: #c0392b; }
+    @media (max-width: 700px) {
+      h1 { font-size: 28px; }
+      h2 { font-size: 20px; }
+      .btn { font-size: 16px; padding: 10px 24px; }
+      #video, #video-container, #output-box, #sentence-box {
+        width: 100%; height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Live ASL Detection & Translation</h2>
+
+  <div id="video-container">
+    <img id="video" src="{{ url_for('video_feed') }}" alt="Live Video Feed" />
+  </div>
+
+  <textarea id="sentence-box" rows="2" readonly style="text-align: center; padding: 10px;"></textarea>
+
+  <button class="btn" onclick="readAloud()">🔊 Read Aloud</button>
+  <button class="btn" onclick="endSession()">End Session</button>
+
+  <input type="text" id="sentenceBox" readonly style="display: none;">
+
+  <script>
+    let lastSpoken = "";
+
+    function speak(text) {
+      if (!text || text === lastSpoken) return;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      speechSynthesis.speak(utterance);
+      lastSpoken = text;
+    }
+
+    function readAloud() {
+      const text = document.getElementById('sentence-box').value;
+      speak(text);
+    }
+
+    setInterval(() => {
+      fetch('/sentence')
+        .then(response => response.json())
+        .then(data => {
+          const box = document.getElementById('sentence-box');
+          box.value = data.sentence; // Update only, no auto-speak
+        });
+    }, 2000);
+
+    function endSession() {
+      fetch('/end_feed', { method: 'POST' })
+        .then(() => {
+          window.location.href = '/';
+        })
+        .catch(error => console.error('Error ending session:', error));
+    }
+  </script>
+
+</body>
+</html>

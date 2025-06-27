@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ASL Translator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fc;
+      color: #2c3e50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    h2 {
+      font-size: 30px;
+      margin-bottom: 30px;
+      color: #e74c3c;
+    }
+
+    #video-container {
+      position: relative;
+      width: 640px;
+      height: 480px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+    }
+
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: 4px solid #e74c3c;
+      border-radius: 10px;
+    }
+
+    .text-box-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 640px;
+      margin-top: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      background-color: #ecf0f1;
+      border: 2px solid #bdc3c7;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 18px;
+      resize: none;
+      height: 100px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .small-btn {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      padding: 8px 12px;
+      font-size: 16px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .small-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .btn {
+      margin-top: 15px;
+      margin-right: 10px;
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #c0392b;
+    }
+
+    .corner-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 16px;
+      font-size: 16px;
+      z-index: 1000;
+      background-color: #3498db;
+    }
+
+    .corner-btn:hover {
+      background-color: #2980b9;
+    }
+
+    /* Dark mode */
+    .dark-mode {
+      background-color: #1e272e;
+      color: #f5f6fa;
+    }
+
+    .dark-mode textarea {
+      background-color: #2f3640;
+      color: #f5f6fa;
+      border-color: #718093;
+    }
+
+    .dark-mode .btn,
+    .dark-mode .small-btn,
+    .dark-mode .corner-btn {
+      color: #fff;
+    }
+
+    @media screen and (max-width: 700px) {
+      #video-container,
+      .text-box-wrapper {
+        width: 100%;
+        height: auto;
+      }
+
+      .btn {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-right dark mode toggle -->
+  <button class="btn corner-btn" onclick="toggleDarkMode()">🌓</button>
+
+  <h2>Live ASL Detection & Translation</h2>
+
+  <div id="video-container">
+    <img id="video" src="{{ url_for('video_feed') }}" alt="Live Video Feed" />
+  </div>
+
+  <div class="text-box-wrapper">
+    <textarea id="sentence-box" readonly placeholder="Detected ASL Sentence..."></textarea>
+    <button class="small-btn" onclick="readAloud()">🔊</button>
+  </div>
+
+  <div>
+    <button class="btn" onclick="endSession()">⏹ End Session</button>
+  </div>
+
+  <script>
+    let lastSpoken = "";
+
+    function speak(text) {
+      if (!text || text === lastSpoken) return;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      speechSynthesis.speak(utterance);
+      lastSpoken = text;
+    }
+
+    function readAloud() {
+      const text = document.getElementById('sentence-box').value;
+      speak(text);
+    }
+
+    function fetchSentence() {
+      fetch('/sentence')
+        .then(response => response.json())
+        .then(data => {
+          const box = document.getElementById('sentence-box');
+          if (box.value !== data.sentence) {
+            box.value = data.sentence;
+            speak(data.sentence);
+          }
+        })
+        .catch(error => console.error("Error fetching sentence:", error));
+    }
+
+    setInterval(fetchSentence, 2000);
+
+    function endSession() {
+      fetch('/end_feed', { method: 'POST' })
+        .then(() => {
+          window.location.href = '/';
+        })
+        .catch(error => console.error('Error ending session:', error));
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+      }
+    };
+  </script>
+</body>
+</html>
