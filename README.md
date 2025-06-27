@@ -1,4 +1,4 @@
-This final year project focuses on converting American Sign Language (ASL) gestures into meaningful English sentences using YOLOv11 for gesture detection and the Gork API for natural language generation. Unlike basic alphabet detection, this system works with predefined word gestures and intelligently forms grammatically correct sentences.
+## This final year project focuses on converting American Sign Language (ASL) gestures into meaningful English sentences using YOLOv11 for gesture detection and the Gork API for natural language generation. Unlike basic alphabet detection, this system works with predefined word gestures and intelligently forms grammatically correct sentences.
 
 🔍 Key Features
 Real-time ASL word recognition using webcam input
@@ -48,4 +48,6 @@ Integration with TTS (Text-to-Speech) for speech output
 Android/iOS deployment for accessibility
 
 Add voice-to-sign support for two-way communication
+![Screenshot 2025-04-08 090547](https://github.com/user-attachments/assets/bf3f841d-a975-40cb-90d6-bc74c8c6e2f0)
+
 
